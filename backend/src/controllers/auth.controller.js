@@ -1,10 +1,12 @@
-export const signup=(req,res)=>{
+const signup=(req,res)=>{
     res.send("signup");
 }
-export const login=(req,res)=>{
+const login=(req,res)=>{
     res.send("signup");
 }
 
-export const logout=(req,res)=>{
+const logout=(req,res)=>{
     res.send("signup");
 }
+
+module.exports={login,signup,logout};
