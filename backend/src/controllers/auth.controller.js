@@ -93,13 +93,18 @@ const updateProfile=async(req,res)=>{
     }
 }
 
-const checkAuth=(req,res)=>{
-      try{
-        res.status(200).json(req.user);
-        
-      }catch(err){
-        console.log(err);
-        res.status(500).send("Internal Server Error");
+const checkAuth = (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "User not authenticated" });
       }
-}
+     
+      const { _id, fullname, email } = req.user;
+     
+      res.status(200).send({message:{ _id, fullname, email }});
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 module.exports={login,signup,logout,updateProfile,checkAuth};
