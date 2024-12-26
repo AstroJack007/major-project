@@ -93,4 +93,13 @@ const updateProfile=async(req,res)=>{
     }
 }
 
-module.exports={login,signup,logout,updateProfile};
+const checkAuth=(req,res)=>{
+      try{
+        res.status(200).json(req.user);
+        
+      }catch(err){
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+      }
+}
+module.exports={login,signup,logout,updateProfile,checkAuth};
