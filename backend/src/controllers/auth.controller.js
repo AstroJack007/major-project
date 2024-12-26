@@ -1,6 +1,8 @@
 const User = require("../models/user.js");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/jwt.js");
+const { profileEnd } = require("console");
+const cloudinary= require("../lib/cloudinary.js");
 const signup=async(req,res)=>{
     const {email,fullname,password} =req.body;
     try{
@@ -72,4 +74,23 @@ const logout=(req,res)=>{
     }
 }
 
-module.exports={login,signup,logout};
+const updateProfile=async(req,res)=>{
+    try{
+        const {profilepic}=req.body;
+        const userId=req.user._id;
+
+        if(!profilepic){
+            return res.status(400).send("Please upload a profile picture"); 
+        }
+
+        const uploadresp= await cloudinary.uploader.upload(profilepic);
+        const updatedUser=await User.findByIdAndUpdate(userId,{profilepic:uploadresp.secure_url},{new:true});
+
+
+    }catch(err){
+        console.log(Err);
+        res.status(500).send("Internal Server Error in updating profile");
+    }
+}
+
+module.exports={login,signup,logout,updateProfile};
