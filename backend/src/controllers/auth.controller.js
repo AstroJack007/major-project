@@ -56,7 +56,7 @@ const login=async(req,res)=>{
 
         }  
         generateToken(user._id,res);
-        res.status(200).json({message:"Login Successful"});
+        res.status(200).json(user);
     }catch(err){
         console.log(err);
         res.status(500).send("Login failed");

@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import { data } from "react-router-dom";
 export const useAuth = create ((set) => ({  
     authUser:null,
     isSigningup:false,
@@ -47,17 +48,22 @@ export const useAuth = create ((set) => ({
             toast.error(error.response.data.message);
         }
     },
-    login :async(data)=>{
+    login :async(dat)=>{
         set({isLoggingIn:true});
         try{
-            const res= await axiosInstance.post('auth/login',data);
+            const res= await axiosInstance.post('auth/login',dat); 
+            console.log("res.data : ",res.data);
             set({authUser:res.data});
             toast.success("Logged in successfully");    
+            
         }catch(error){
             console.log("error in login : ",error);
             toast.error(error.response.data.message);
         }finally{
             set({isLoggingIn:false});
         }
+    },
+    updateProfile: async(data)=>{
+
     }
 }))
