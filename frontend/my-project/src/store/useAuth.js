@@ -33,7 +33,7 @@ export const useAuth = create ((set) => ({
             
         }catch(error){
             console.log("error in signup : ",error);
-            toast.error(error.response.data.message);
+            toast.error(error.message);
         }finally{
             set({isSigningup:false})
         }
@@ -45,7 +45,7 @@ export const useAuth = create ((set) => ({
             set({authUser:null});
             toast.success("Logged out successfully");
         }catch(error){
-            toast.error(error.response.data.message);
+            toast.error(error.message);
         }
     },
     login :async(dat)=>{
@@ -58,12 +58,25 @@ export const useAuth = create ((set) => ({
             
         }catch(error){
             console.log("error in login : ",error);
-            toast.error(error.response.data.message);
+            toast.error(error.message);
         }finally{
             set({isLoggingIn:false});
         }
     },
     updateProfile: async(data)=>{
-
+        set({isUpdatingProfile:true})
+        try{
+            const res=await axiosInstance.put('auth/update-profile',data);
+            set({authUser:res.data});
+            toast.success("Profile updated successfully");
+        }catch(error){
+            console.log("error in updateProfile : ",error);
+          
+            toast.error(error.message);
+    
+    }finally{
+        set({isUpdatingProfile:false})
     }
-}))
+}
+}
+));

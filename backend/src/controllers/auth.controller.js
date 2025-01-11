@@ -80,15 +80,15 @@ const updateProfile=async(req,res)=>{
         const userId=req.user._id;
 
         if(!profilepic){
-            return res.status(400).send("Please upload a profile picture"); 
+            return res.status(409).send("Please upload a profile picture"); 
         }
 
         const uploadresp= await cloudinary.uploader.upload(profilepic);
         const updatedUser=await User.findByIdAndUpdate(userId,{profilepic:uploadresp.secure_url},{new:true});
-
+        res.status(200).json(updatedUser);
 
     }catch(err){
-        console.log(Err);
+        console.log(err);
         res.status(500).send("Internal Server Error in updating profile");
     }
 }
