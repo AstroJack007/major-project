@@ -15,8 +15,7 @@ export const useAuth = create ((set) => ({
         const res =await axiosInstance.get('auth/check');
         set({authUser:res.data})
     } catch (error) {
-        console.log("error in checkauth : ",error
-        )
+        console.log("error in checkauth : ",error)
         set({authUser:null})
     }
     finally{
@@ -33,7 +32,7 @@ export const useAuth = create ((set) => ({
             
         }catch(error){
             console.log("error in signup : ",error);
-            toast.error(error.message);
+            toast.error(error.response.data);
         }finally{
             set({isSigningup:false})
         }
@@ -58,7 +57,7 @@ export const useAuth = create ((set) => ({
             
         }catch(error){
             console.log("error in login : ",error);
-            toast.error(error.message);
+            toast.error(error.response.data);
         }finally{
             set({isLoggingIn:false});
         }
