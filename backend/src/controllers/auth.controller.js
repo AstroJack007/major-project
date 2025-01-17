@@ -99,9 +99,12 @@ const checkAuth = (req, res) => {
         return res.status(401).json({ message: "User not authenticated" });
       }
      
-      const { _id, fullname, email } = req.user;
+      const { _id, fullname, email, profilepic } = req.user;
      
-      res.status(200).send({message:{ _id, fullname, email }});
+      res.status(200).send({message:{ _id, 
+        fullname, 
+        email,
+        profilepic  }});
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });

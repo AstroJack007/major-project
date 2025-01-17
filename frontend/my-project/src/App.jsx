@@ -11,11 +11,12 @@ import { useAuth } from './store/useAuth.js'
 import {Loader} from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 const App = () => {
-  const {authUser,checkAuth, isCheckingAuth}=useAuth();
+  const {authUser,checkAuth, isCheckingAuth,onlineUser}=useAuth();
+  console.log("oneline",{onlineUser});
   useEffect(()=>{
     checkAuth();
-  },[checkAuth]); 
-  console.log(authUser);
+  },[]); 
+  console.log({authUser});
   if(!checkAuth && !authUser){
     return (
       <div className='flex justify-center items-center h-screen'>

@@ -1,35 +1,56 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useChat } from "../store/useChat";
 import { useAuth } from "../store/useAuth";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { Users } from "lucide-react";
+import { Users, Search } from "lucide-react";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChat();
-  const onlineUsers = [];
+  const { onlineUser } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     console.log("Fetching users...");
     getUsers();
   }, [getUsers]);
 
-  useEffect(() => {
-    console.log("Users:", users);
-  }, [users]);
-
   if (isUsersLoading) return <SidebarSkeleton />;
+
+  const filteredUsers = users
+    .filter(user => user.fullname.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      // Sort online users first
+      const aOnline = onlineUser.includes(a._id);
+      const bOnline = onlineUser.includes(b._id);
+      if (aOnline && !bOnline) return -1;
+      if (!aOnline && bOnline) return 1;
+      return a.fullname.localeCompare(b.fullname);
+    });
 
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
-          <span className="font-medium hidden lg:block">Contacts</span>
+          <h3 className="text-xl font-semibold hidden lg:block">Users</h3>
         </div>
-        {/* TODO: Online filter toggle */}
+      </div>
+
+      <div className="p-4 hidden lg:block">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-base-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
       </div>
 
       <div className="overflow-y-auto w-full py-3">
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <button
             key={user._id}
             onClick={() => setSelectedUser(user)}
@@ -45,15 +66,17 @@ const Sidebar = () => {
                 alt={user.fullname}
                 className="size-12 object-cover rounded-full"
               />
-              
+              {onlineUser.includes(user._id) && (
+                <span
+                  className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-base-100"
+                />
+              )}
             </div>
-
-            {/* User info - only visible on larger screens */}
-            <div className="hidden lg:block text-left min-w-0">
-              <div className="font-medium truncate">{user.fullname}</div>
-              <div className="text-sm text-zinc-400">
-                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
-              </div>
+            <div className="hidden lg:block text-left">
+              <h4 className="font-medium">{user.fullname}</h4>
+              <p className="text-xs text-muted-foreground">
+                {onlineUser.includes(user._id) ? "Online" : "Offline"}
+              </p>
             </div>
           </button>
         ))}

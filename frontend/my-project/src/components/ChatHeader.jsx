@@ -4,7 +4,7 @@ import { useChat } from "../store/useChat";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChat();
-  const { onlineUsers } = useAuth();
+  const { onlineUser } = useAuth();
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -21,7 +21,7 @@ const ChatHeader = () => {
           <div>
             <h3 className="font-medium">{selectedUser.fullName}</h3>
             <p className="text-sm text-base-content/70">
-            {onlineUsers && onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+            {onlineUser && onlineUser.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>
           </div>
         </div>

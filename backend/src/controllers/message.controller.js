@@ -1,6 +1,7 @@
 const User =require("../models/user.js")
 const Msg =require("../models/msg.js")
 const cloudinary=require("cloudinary");
+const { getReceiverSocketId ,io} = require("../lib/socket.js");
 
 const getUsersforSiderabar = async (req, res) => {
     try{
@@ -57,9 +58,18 @@ const sendMessages=async(req,res)=>{
         }) 
 
         await newmessage.save();
+        const receiverSocketId=getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage",newmessage)
+        }
+        const senderSocketId = getReceiverSocketId(senderId);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("newMessage", newmessage);
+        }
+
 
     }catch(err){
-        return res.status(400).send("error in sending message");
+        return res.status(400).json({message: "error in sending message"});
     }
 }
 
