@@ -1,6 +1,6 @@
 import { useChat } from "../store/useChat";
 
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/sidebar";
 import NoChatSelected from "../components/NoChatSelected";
 import ChatContainer from "../components/ChatContainer";
 
