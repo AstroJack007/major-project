@@ -13,10 +13,11 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cookieparser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['http://13.126.79.40', 'http://localhost:5173']
+        : 'http://localhost:5173',
     credentials: true,
 }));
-
 app.use("/api/auth", authRoutes);
 app.use('/api/message', msgRoutes);
 
