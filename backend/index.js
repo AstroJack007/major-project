@@ -7,8 +7,6 @@ const authRoutes = require('./src/routes/auth.js');
 const cors = require('cors');
 const msgRoutes = require('./src/routes/message.js');
 const path = require("path");
-const fs = require('fs');
-const https = require('https');
 
 dotenv.config();
 
@@ -18,7 +16,7 @@ app.use(express.json());
 app.use(cookieparser());
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://65.1.130.1', 'http://localhost:5173']
+        ? ['http://65.1.130.1', 'http://localhost:5173']
         : 'http://localhost:5173',
     credentials: true,
 }));
@@ -34,12 +32,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-const sslOptions = {
-    key: fs.readFileSync('ssl/server.key'),
-    cert: fs.readFileSync('ssl/server.cert')
-};
-
-https.createServer(sslOptions, app).listen(port, () => {
-    console.log(`Server running on https://localhost:${port}`);
+server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
     connectDB();
 });
