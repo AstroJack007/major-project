@@ -9,9 +9,10 @@ const cors=require('cors');
 const msgRoutes=require('./src/routes/message.js');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-
+const path=require("path");
 
 const port = process.env.PORT || 3000; 
+const __dirname=path.resolve();
 
 app.use(express.json());
 app.use(cookieparser());
@@ -22,6 +23,15 @@ app.use(cors({
 ))
 app.use(("/api/auth"),authRoutes);
 app.use('/api/message',msgRoutes);
+
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static(path.join(__dirname,"../frontend/my-project/dist")));
+
+    app.get("*",(req,res)=>{
+        res.sendFile(path.join(__dirname,"../frontend/my-project",'dist','index.html'))
+    })
+
+}
 
 server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
