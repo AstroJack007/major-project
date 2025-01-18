@@ -55,8 +55,19 @@ const login=async(req,res)=>{
             return res.status(400).send("Invalid Password"); 
 
         }  
+
+        
         generateToken(user._id,res);
-        res.status(200).json(user);
+       
+        const token = jwt.sign({ userid: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Ensure secure cookies in production
+        sameSite: 'strict',
+    });
+
+    res.status(200).json({ message: 'Login successful' });
     }catch(err){
         console.log(err);
         res.status(500).send("Login failed");
