@@ -7,7 +7,7 @@ const authRoutes = require('./src/routes/auth.js');
 const cors = require('cors');
 const msgRoutes = require('./src/routes/message.js');
 const path = require("path");
-
+dotenv.config();
 const port = process.env.PORT;
 
 app.use(express.json());
