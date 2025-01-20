@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "postinstall": "npm install --prefix ../frontend/my-project && npm run build --prefix ../frontend/my-project"
+    
   },
   "keywords": [],
   "author": "",
