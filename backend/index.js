@@ -18,6 +18,11 @@ app.use(cors({
     origin: ["http://3.109.2.124:3000"], // Add frontend URL explicitly
     credentials: true, // Required for sending cookies
 }));
+ 
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${JSON.stringify(req.body)}`);
+    next();
+});
 
 
 app.use("/api/auth", authRoutes);
