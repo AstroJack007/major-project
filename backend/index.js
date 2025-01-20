@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieparser());
 app.use(cors({
-    origin:"http://3.110.88.37:3000",
+    origin:"http://52.66.244.205:3000",
     credentials:true,
 }
 ))
