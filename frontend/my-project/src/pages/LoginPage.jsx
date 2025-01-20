@@ -50,7 +50,9 @@ const LoginPage = () => {
                 className={`input input-bordered w-full pl-10`}
                 placeholder="you@example.com"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) => {
+                  console.log("Email:", e.target.value);
+                  setFormData({ ...formData, email: e.target.value })}}
               />
             </div>
           </div>
@@ -68,7 +70,9 @@ const LoginPage = () => {
                 className={`input input-bordered w-full pl-10`}
                 placeholder="••••••••"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) => {
+                  console.log("Password:", e.target.value);
+                  setFormData({ ...formData, password: e.target.value })}}
               />
               <button
                 type="button"
