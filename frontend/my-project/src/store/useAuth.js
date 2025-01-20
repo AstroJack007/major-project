@@ -50,6 +50,7 @@ export const useAuth = create((set, get) => ({
 
     login: async (data) => {
         set({ isLoggingIn: true });
+        console.log("inside login");
         try {
             const res = await axiosInstance.post('auth/login', data);
             set({ authUser: res.data });
