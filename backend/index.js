@@ -15,9 +15,10 @@ const port = process.env.PORT ;
 app.use(express.json());
 app.use(cookieparser());
 app.use(cors({
-    origin: "http://3.109.2.124",
-    credentials: true,
+    origin: ["http://3.109.2.124:3000"], // Add frontend URL explicitly
+    credentials: true, // Required for sending cookies
 }));
+
 
 app.use("/api/auth", authRoutes);
 app.use('/api/message', msgRoutes);
