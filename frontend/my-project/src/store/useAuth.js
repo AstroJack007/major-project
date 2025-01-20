@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 import { toast } from "react-hot-toast";
 import {io} from "socket.io-client";
 
-const BASE_URL =  "http://3.109.2.124/api",
+const BASE_URL =  "http://3.109.2.124/api";
 
 
 export const useAuth = create((set, get) => ({
