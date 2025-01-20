@@ -19,10 +19,6 @@ app.use(cors({
     credentials: true, // Required for sending cookies
 }));
 
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${JSON.stringify(req.body)}`);
-    next();
-});
 
 app.use("/api/auth", authRoutes);
 app.use('/api/message', msgRoutes);
