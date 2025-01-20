@@ -49,14 +49,16 @@ export const useAuth = create((set, get) => ({
 
     login: async (data) => {
         set({ isLoggingIn: true });
+        console.log("inside login");
         try {
             const res = await axiosInstance.post('auth/login', data);
             set({ authUser: res.data });
             toast.success("Logged in successfully");
             get().connectSocket();
         } catch (error) {
-            console.log("error in login : ", error);
-            toast.error(error.response.data);
+            console.log('Full error object:', error); // Log the full error
+            console.log('Error response:', error.response); // Log the error response if any
+            console.log('Error request:', error.request); // Log the error request if any
         } finally {
             set({ isLoggingIn: false });
         }
