@@ -91,20 +91,31 @@ export const useAuth = create((set, get) => ({
     },
 
     connectSocket: () => {
-        const {authUser}=get();
+        const {authUser} = get();
         if (!authUser || get().socket?.connected) return;
-
-        const socket = io(BASE_URL,{
-            query:{
-                userId:authUser._id,
-            }
+    
+        const socket = io(BASE_URL, {
+            query: {
+                userId: authUser._id,
+            },
+            transports: ['websocket', 'polling'],
+            withCredentials: true
         });
-        socket.on("connect");
+    
+        socket.on("connect", () => {
+            console.log("Socket connected:", socket.id);
+        });
+    
+        socket.on("connect_error", (error) => {
+            console.error("Socket connection error:", error);
+        });
+    
         set({ socket });
-        socket.on("getOnlineUser",(userIds)=>{
-            set({onlineUser:userIds});
-        })
         
+        socket.on("getOnlineUser", (userIds) => {
+            console.log("Online users:", userIds);
+            set({ onlineUser: userIds });
+        });
     },
 
     disconnectSocket: () => {
