@@ -11,7 +11,7 @@ const path = require("path");
 dotenv.config();
 
 const port = process.env.PORT ;
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use(cookieparser());
 app.use(cors({
