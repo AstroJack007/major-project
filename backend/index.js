@@ -14,12 +14,12 @@ const port = process.env.PORT ;
 app.use(cors());
 app.use(express.json());
 app.use(cookieparser());
-app.use(cors({
-    origin: ['http://3.109.2.124:3000', 'http://3.109.2.124'], // Add both with and without port
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+app.use(
+    cors({
+      origin: "http://localhost:5173",
+      credentials: true,
+    })
+  );
  
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${JSON.stringify(req.body)}`);
