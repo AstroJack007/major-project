@@ -7,33 +7,36 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: [ "http://localhost:5174"],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        origin: ["http://localhost:5173"],
         credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"],
-        exposedHeaders: ["Content-Range", "X-Content-Range"]
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     },
     allowEIO3: true,
     transports: ['websocket', 'polling']
 });
 
-// ...existing code...
- function getReceiverSocketId(userId) {
-    return userSocketMap[userId];
-  }
-const userSocketMap ={};
+const userSocketMap = {};
+
 io.on('connection', (socket) => {
     console.log("A user connected", socket.id);
-    const userId =socket.handshake.query.userId;
-    if(userId){
-        userSocketMap[userId]=socket.id;
+    const userId = socket.handshake.query.userId;
+    if (userId) {
+        userSocketMap[userId] = socket.id;
+        io.emit("getOnlineUser", Object.keys(userSocketMap));
     }
-    io.emit("getOnlineUser",Object.keys(userSocketMap))
+    
     socket.on("disconnect", () => {
         console.log("User disconnected", socket.id);
-        delete userSocketMap[userId];
-        io.emit("getOnlineUser",Object.keys(userSocketMap));
+        if (userId) {
+            delete userSocketMap[userId];
+            io.emit("getOnlineUser", Object.keys(userSocketMap));
+        }
     });
 });
 
-module.exports = { io, app, server ,getReceiverSocketId};
+function getReceiverSocketId(userId) {
+    return userSocketMap[userId];
+}
+
+module.exports = { io, app, server, getReceiverSocketId };

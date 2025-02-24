@@ -50,16 +50,19 @@ export const useAuth = create((set, get) => ({
 
     login: async (data) => {
         set({ isLoggingIn: true });
-        console.log("inside login");
         try {
             const res = await axiosInstance.post('auth/login', data);
             set({ authUser: res.data });
             toast.success("Logged in successfully");
             get().connectSocket();
         } catch (error) {
-            console.log('Full error object:', error); // Log the full error
-            console.log('Error response:', error.response); // Log the error response if any
-            console.log('Error request:', error.request); // Log the error request if any
+            console.error("Login error:", error);
+            // Display error message from the backend or a default message
+            toast.error(
+                error.response?.data || 
+                error.message || 
+                "Login failed. Please check your credentials."
+            );
         } finally {
             set({ isLoggingIn: false });
         }
@@ -92,20 +95,30 @@ export const useAuth = create((set, get) => ({
     },
 
     connectSocket: () => {
-        const {authUser}=get();
+        const { authUser } = get();
         if (!authUser || get().socket?.connected) return;
-
-        const socket = io(BASE_URL,{
-            query:{
-                userId:authUser._id,
-            }
+    
+        const socket = io(BASE_URL, {
+            query: {
+                userId: authUser._id
+            },
+            withCredentials: true,
+            transports: ['websocket', 'polling']
         });
-        socket.on("connect");
+    
+        socket.on("connect", () => {
+            console.log("Socket connected");
+        });
+    
+        socket.on("connect_error", (error) => {
+            console.error("Socket connection error:", error);
+        });
+    
         set({ socket });
-        socket.on("getOnlineUser",(userIds)=>{
-            set({onlineUser:userIds});
-        })
-        
+    
+        socket.on("getOnlineUser", (userIds) => {
+            set({ onlineUser: userIds });
+        });
     },
 
     disconnectSocket: () => {
