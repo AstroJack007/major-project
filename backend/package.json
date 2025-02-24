@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
+    
   },
   "keywords": [],
   "author": "",
@@ -18,9 +19,9 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "major-project": "file:..",
     "mongoose": "^8.9.2",
     "nodemon": "^3.1.9",
+    "prisma": "^6.1.0",
     "socket": "^0.14.39",
     "socket.io": "^4.8.1"
   }

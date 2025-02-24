@@ -1,4 +1,6 @@
-
+// filepath: /d:/code/web/New folder/major project/frontend/my-project/.gitignore
+node_modules/
+dist/
 
 # Logs
 logs
