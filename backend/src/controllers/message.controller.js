@@ -46,7 +46,6 @@ const sendMessages=async(req,res)=>{
             const uploadResp= await cloudinary.uploader.upload(image);
             imageUrl=uploadResp.secure_url;
         }else{
-
             imageUrl=null;
         }
 
@@ -67,8 +66,9 @@ const sendMessages=async(req,res)=>{
             io.to(senderSocketId).emit("newMessage", newmessage);
         }
 
-
+        res.status(201).json(newmessage);
     }catch(err){
+        console.error("Error in sendMessages:", err);
         return res.status(400).json({message: "error in sending message"});
     }
 }

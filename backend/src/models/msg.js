@@ -16,11 +16,12 @@ const msgSchema = new mongoose.Schema({
 
     text:{
         type:String,    
-        required:true,
+        required: function() {
+            return !this.image; // text is required only if there's no image
+        },
     },
     image:{
         type:String,
-         
     }
 
 },{timestamps:true});

@@ -30,30 +30,25 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    console.log("Before send - text:", text);
     
     if (!text.trim() && !imagePreview) return;
 
     try {
-        console.log("Attempting to send message...");
-        const result = sendMessage({
+        const result = await sendMessage({
             text: text.trim(),
             image: imagePreview,
         });
         
-        console.log("Send message result:", result);
-        setText("");
-        setImagePreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
+        if (result) {
+            setText("");
+            setImagePreview(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         }
-        console.log("Message sent and state cleared");
-        
     } catch (error) {
         console.error("Error in handleSendMessage:", error);
         toast.error("Failed to send message");
-    } finally {
-        console.log("HandleSendMessage completed");
     }
 };
 

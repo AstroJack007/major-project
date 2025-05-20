@@ -35,16 +35,12 @@ export const useChat = create((set, get) => ({
   },
 
   sendMessage: async (messageData) => {
-    const { selectedUser, messages } = get();
+    const { selectedUser } = get();
     try {
       const res = await axiosInstance.post(
         `/message/${selectedUser._id}/send`,
         messageData
       );
-      const newMessage = res.data;
-      set((state) => ({
-        messages: [...state.messages, newMessage]
-    }));
        
       return true;
     } catch (err) {
@@ -74,9 +70,15 @@ export const useChat = create((set, get) => ({
             newMessage.senderId === authUser._id;
             
         if (isRelevantMessage) {
-            set((state) => ({
-                messages: [...state.messages, newMessage]
-            }));
+            set((state) => {
+                // Check if message already exists
+                const messageExists = state.messages.some(msg => msg._id === newMessage._id);
+                if (messageExists) return state;
+                
+                return {
+                    messages: [...state.messages, newMessage]
+                };
+            });
         }
     });
 },

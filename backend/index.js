@@ -27,7 +27,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${JSON.stringify(req.body)}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} `);
     next();
 });
 
