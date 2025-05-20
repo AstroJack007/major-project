@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install-deps": "cd backend && npm install && cd ../frontend/my-project && npm install",
-    "build": "npm run install-deps && cd frontend/my-project && npm run build",
+    "build": "npm run install-deps && cd frontend/my-project && npm install -g vite && npm run build",
     "start": "npm run start --prefix backend"
   },
   "keywords": [],
