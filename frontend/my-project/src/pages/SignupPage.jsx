@@ -1,7 +1,6 @@
-
 import { toast } from "react-hot-toast";
 import {useState} from 'react'
-import {useAuth} from '../store/useAuth'
+import {useAuthStore} from '../store/useAuth'
 import {Link} from 'react-router-dom'
 import AuthImagePattern from '../components/AuthImagePattern'
 import {MessageSquare,User,Mail,Lock,Eye,EyeOff,Loader2} from 'lucide-react'
@@ -12,7 +11,7 @@ const [formData, setFormData] = useState({
   email:'',
   password:'',
 });
-const {signup,isSigningup}=useAuth();
+const {signup,isSigningup}=useAuthStore();
 const validateForm=()=>{
   if(!formData.fullname.trim()) return toast.error('Fullname is required');
   if(!formData.email.trim()) return toast.error('Email is required');

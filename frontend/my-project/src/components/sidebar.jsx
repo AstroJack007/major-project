@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useChat } from "../store/useChat";
-import { useAuth } from "../store/useAuth";
+import { useChatStore } from "../store/useChat";
+import { useAuthStore } from "../store/useAuth";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users, Search } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChat();
-  const { onlineUser } = useAuth();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { onlineUsers } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -20,8 +20,8 @@ const Sidebar = () => {
     .filter(user => user.fullname.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       // Sort online users first
-      const aOnline = onlineUser.includes(a._id);
-      const bOnline = onlineUser.includes(b._id);
+      const aOnline = onlineUsers.includes(a._id);
+      const bOnline = onlineUsers.includes(b._id);
       if (aOnline && !bOnline) return -1;
       if (!aOnline && bOnline) return 1;
       return a.fullname.localeCompare(b.fullname);
@@ -66,7 +66,7 @@ const Sidebar = () => {
                 alt={user.fullname}
                 className="size-12 object-cover rounded-full"
               />
-              {onlineUser.includes(user._id) && (
+              {onlineUsers.includes(user._id) && (
                 <span
                   className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-base-100"
                 />
@@ -75,7 +75,7 @@ const Sidebar = () => {
             <div className="hidden lg:block text-left">
               <h4 className="font-medium">{user.fullname}</h4>
               <p className="text-xs text-muted-foreground">
-                {onlineUser.includes(user._id) ? "Online" : "Offline"}
+                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </p>
             </div>
           </button>

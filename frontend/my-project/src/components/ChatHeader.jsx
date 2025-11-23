@@ -1,10 +1,10 @@
 import { X } from "lucide-react";
-import { useAuth } from "../store/useAuth";
-import { useChat } from "../store/useChat";
+import { useAuthStore } from "../store/useAuth";
+import { useChatStore } from "../store/useChat";
 
 const ChatHeader = () => {
-  const { selectedUser, setSelectedUser } = useChat();
-  const { onlineUser } = useAuth();
+  const { selectedUser, setSelectedUser } = useChatStore();
+  const { onlineUsers } = useAuthStore();
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -21,7 +21,7 @@ const ChatHeader = () => {
           <div>
             <h3 className="font-medium">{selectedUser.fullName}</h3>
             <p className="text-sm text-base-content/70">
-            {onlineUser && onlineUser.includes(selectedUser._id) ? "Online" : "Offline"}
+            {onlineUsers && onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>
           </div>
         </div>
