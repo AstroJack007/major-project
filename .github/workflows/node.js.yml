@@ -1,31 +1,82 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: CI / CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-
-    runs-on: self-hosted
-
+  quality:
+    name: Verify ${{ matrix.project.name }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+        project:
+          - name: Backend
+            path: backend
+            lockfile: backend/package-lock.json
+          - name: Frontend
+            path: frontend/my-project
+            lockfile: frontend/my-project/package-lock.json
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ matrix.project.path }}
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm run build
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ matrix.project.lockfile }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build --if-present
+
+  deploy:
+    name: Trigger Render deploy
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Render deploy hook / API
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -n "${RENDER_SERVICE_ID}" ] && [ -n "${RENDER_API_KEY}" ]; then
+            curl -fsSL \
+              -H "Authorization: Bearer ${RENDER_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -X POST \
+              --data '{"clearCache":false}' \
+              "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys"
+          elif [ -n "${RENDER_DEPLOY_HOOK_URL}" ]; then
+            curl -fsSL -X POST "${RENDER_DEPLOY_HOOK_URL}"
+          else
+            echo "Set either RENDER_DEPLOY_HOOK_URL or (RENDER_SERVICE_ID + RENDER_API_KEY) secrets." >&2
+            exit 1
+          fi
