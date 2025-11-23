@@ -37,32 +37,39 @@ const signup=async(req,res)=>{
         res.status(500).send("Internal Server Error");
     }
 }
-const login=async(req,res)=>{
-    const {email,password} = req.body;
-    if(!email || !password){
-        return res.status(400).send("Please fill all the fields");
-    }
-    try{
-        const user = await User.findOne({email});
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
         
+        if (!email || !password) {
+            return res.status(400).send("Please fill all the fields");
+        }
+
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).send("Invalid Email");
         }
 
-        const iscorrect = await bcrypt.compare(password,user.password);
-    
-        if(!iscorrect){
-            return res.status(400).send("Invalid Password"); 
+        const isCorrect = await bcrypt.compare(password, user.password);
+        if (!isCorrect) {
+            return res.status(400).send("Invalid Password");
+        }
 
-        }  
-        generateToken(user._id,res);
-        res.status(200).json(user);
-    }catch(err){
-        console.log(err);
+        // Generate token first
+        generateToken(user._id, res);
+
+        // Then send response
+        res.status(200).json({
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            profilepic: user.profilepic
+        });
+    } catch (err) {
+        console.error("Error during login:", err);
         res.status(500).send("Login failed");
     }
-
-}
+};
 
 const logout=(req,res)=>{
     try{

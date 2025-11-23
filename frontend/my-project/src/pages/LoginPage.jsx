@@ -51,7 +51,7 @@ const LoginPage = () => {
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={(e) => {
-                  console.log("Email:", e.target.value);
+                  
                   setFormData({ ...formData, email: e.target.value })}}
               />
             </div>
@@ -71,7 +71,7 @@ const LoginPage = () => {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => {
-                  console.log("Password:", e.target.value);
+             
                   setFormData({ ...formData, password: e.target.value })}}
               />
               <button
