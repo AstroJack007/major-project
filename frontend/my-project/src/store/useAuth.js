@@ -5,6 +5,7 @@ import {io} from "socket.io-client";
 
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
+
 export const useAuthStore = create((set, get) => ({
     authUser: null,
     isSigningup: false,
@@ -120,7 +121,8 @@ export const useAuthStore = create((set, get) => ({
         set({ socket });
     
         socket.on("getOnlineUser", (userIds) => {
-            set({ onlineUsers: userIds });
+            console.log("Online users:", userIds);
+            set({ onlineUser: userIds });
         });
     },
 
