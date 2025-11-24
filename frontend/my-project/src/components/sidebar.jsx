@@ -10,23 +10,28 @@ const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    console.log("Fetching users...");
     getUsers();
   }, [getUsers]);
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
-  const filteredUsers = users
-    .filter(user => user.fullname.toLowerCase().includes(searchTerm.toLowerCase()))
+  const normalizedSearch = searchTerm.toLowerCase();
+  const safeUsers = Array.isArray(users) ? users : [];
+
+  const filteredUsers = safeUsers
+    .filter((user) => {
+      const name = user?.fullname ?? "";
+      return name.toLowerCase().includes(normalizedSearch);
+    })
     .sort((a, b) => {
       // Sort online users first
       const aOnline = onlineUsers.includes(a._id);
       const bOnline = onlineUsers.includes(b._id);
       if (aOnline && !bOnline) return -1;
       if (!aOnline && bOnline) return 1;
-      return a.fullname.localeCompare(b.fullname);
+      return (a.fullname || "").localeCompare(b.fullname || "");
     });
-
+  console.log("hello: ",filteredUsers);
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
@@ -73,7 +78,7 @@ const Sidebar = () => {
               )}
             </div>
             <div className="hidden lg:block text-left">
-              <h4 className="font-medium">{user.fullname}</h4>
+              <h4 className="font-medium">{user.fullName}</h4>
               <p className="text-xs text-muted-foreground">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </p>

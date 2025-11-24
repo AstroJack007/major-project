@@ -120,10 +120,26 @@ export const useAuthStore = create((set, get) => ({
     
         set({ socket });
     
+        // Listen to both possible event names
         socket.on("getOnlineUser", (userIds) => {
-            console.log("Online users:", userIds);
-            set({ onlineUser: userIds });
+            console.log("RAW getOnlineUser received:", userIds);
+            const { authUser } = get();
+            console.log("Current authUser:", authUser);
+            const filteredUserIds = userIds.filter(id => id !== authUser._id);
+            console.log("After filtering:", filteredUserIds);
+            set({ onlineUsers: filteredUserIds });
         });
+        
+        socket.on("getOnlineUsers", (userIds) => {
+            const { authUser } = get();
+            const filteredUserIds = userIds.filter(id => id !== authUser._id);
+            set({ onlineUsers: filteredUserIds });
+        });
+
+        // Remove this debug listener in production
+        // socket.onAny((eventName, ...args) => {
+        //     console.log(`Socket event received: ${eventName}`, args);
+        // });
     },
 
     disconnectSocket: () => {
